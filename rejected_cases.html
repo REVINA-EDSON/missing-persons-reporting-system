@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rejected Cases | Missing Persons System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles/admin-dashboard.css">
+  <style>
+    .person-img {
+      height: 200px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .badge-missing {
+      background-color: #dc3545;
+    }
+    .badge-found {
+      background-color: #28a745;
+    }
+    .detail-label {
+      font-weight: 600;
+      color: #495057;
+    }
+    .rejection-reason {
+      background-color: #fff8f8;
+      border-left: 3px solid #dc3545;
+      padding: 10px;
+      border-radius: 0 5px 5px 0;
+    }
+    .table-responsive {
+      min-height: 300px;
+    }
+    .main-content {
+      margin-left: 280px;
+      padding: 20px;
+      transition: margin-left 0.3s;
+    }
+    @media (max-width: 992px) {
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" id="sidebarToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Vertical Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-brand">
+      <i class="fa-solid fa-magnifying-glass-location"></i> Missing Persons
+    </a>
+    
+    <div class="sidebar-menu">
+      <div class="sidebar-item">
+        <a href="admin-dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-house"></i> Dashboard
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="missing-reports.html" class="sidebar-link">
+          <i class="fas fa-search"></i> Missing Reports
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="found-reports.html" class="sidebar-link">
+          <i class="fas fa-check-circle"></i> Found Reports
+        </a>
+      </div>
+    
+      <div class="sidebar-item has-dropdown">
+        <a href="#" class="sidebar-link" id="reportsDropdown">
+          <i class="fas fa-file-alt"></i> Cases
+          <i class="fas fa-chevron-down dropdown-icon ms-auto"></i>
+        </a>
+        <div class="sidebar-dropdown" id="reportsMenu">
+          <a href="approved_cases.html" class="sidebar-link">Approved Cases</a>
+          <a href="rejected_cases.html" class="sidebar-link active">Rejected Cases</a>
+        </div>
+      </div> 
+      
+      <div class="sidebar-divider"></div>
+      
+      <div class="sidebar-item">
+        <a href="admin-register.html" class="register-admin-btn">
+          <i class="fas fa-user-plus"></i> Register New Admin
+        </a>
+      </div>
+      
+      <div class="sidebar-item">
+        <a href="settings.html" class="sidebar-link">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+      </div> 
+      
+      <div class="sidebar-item">
+        <a href="help.html" class="sidebar-link">
+          <i class="fas fa-question-circle"></i> Help & Support
+        </a>
+      </div>
+    </div>
+     
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-info">
+          <h6 class="user-name">Admin User</h6>
+          <span class="user-role">System Administrator</span>
+        </div>
+      </div>
+      
+      <div class="mt-3 d-flex justify-content-between">
+        <button id="themeToggle" class="btn btn-outline-primary btn-sm">
+          <i class="fas fa-moon"></i> Dark Mode
+        </button>
+        
+        <div class="dropdown">
+          <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown">
+            <i class="fas fa-globe"></i> Language
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="?lang=en">English</a></li>
+            <li><a class="dropdown-item" href="?lang=sw">Swahili</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <a href="admin-login.html" class="btn btn-danger btn-sm w-100 mt-3">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container-fluid main-content" id="mainContent">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0 display-5 fw-bold">
+        <i class="fas fa-times-circle text-danger me-2"></i> Rejected Cases
+      </h2>
+      <div class="d-flex">
+        <input type="text" id="searchInput" class="form-control me-2" placeholder="Search cases...">
+        <button class="btn btn-primary" id="refreshBtn">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+    </div>
+    
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="card bg-light">
+          <div class="card-body py-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted">Total Rejected:</span>
+              <span class="badge bg-danger rounded-pill" id="totalCases">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card bg-light">
+          <div class="card-body py-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted">Last Updated:</span>
+              <span class="text-muted" id="lastUpdated">Just now</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" id="casesTable">
+            <thead class="table-danger">
+              <tr>
+                <th>Report ID</th>
+                <th>Person</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Type</th>
+                <th>Event Date</th>
+                <th>Rejected On</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="casesTableBody">
+              <tr>
+                <td colspan="8" class="text-center text-muted">Loading cases...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <nav aria-label="Case pagination" class="mt-4">
+          <ul class="pagination justify-content-center" id="pagination">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1">Loading...</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Details Modal -->
+  <div class="modal fade" id="caseDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Rejected Case Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="caseDetailsContent">
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Sidebar toggle functionality
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+      document.getElementById('mainContent').classList.toggle('expanded');
+    });
+
+    // Dropdown functionality
+    document.getElementById('reportsDropdown').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('reportsMenu').classList.toggle('show');
+      this.querySelector('.dropdown-icon').classList.toggle('fa-chevron-up');
+    });
+
+    // Case management functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const casesTableBody = document.getElementById('casesTableBody');
+      const totalCasesSpan = document.getElementById('totalCases');
+      const lastUpdatedSpan = document.getElementById('lastUpdated');
+      const searchInput = document.getElementById('searchInput');
+      const refreshBtn = document.getElementById('refreshBtn');
+      const caseDetailsModal = new bootstrap.Modal('#caseDetailsModal');
+      
+      let allCases = [];
+      let currentPage = 1;
+      const casesPerPage = 10;
+      
+      function loadCases() {
+        fetch('fetch_cases.php?type=rejected')
+          .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+          })
+          .then(data => {
+            if (data.error) throw new Error(data.error);
+            allCases = data;
+            updateCasesCount();
+            renderTable();
+            renderPagination();
+            updateLastUpdated();
+          })
+          .catch(error => {
+            console.error('Error loading cases:', error);
+            casesTableBody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Error loading cases: ${error.message}</td></tr>`;
+          });
+      }
+      
+      function updateCasesCount() {
+        totalCasesSpan.textContent = allCases.length;
+      }
+      
+      function updateLastUpdated() {
+        const now = new Date();
+        lastUpdatedSpan.textContent = now.toLocaleString();
+      }
+      
+      function renderTable() {
+        const filteredCases = filterCases();
+        const paginatedCases = paginateCases(filteredCases);
+        
+        if (paginatedCases.length === 0) {
+          casesTableBody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No cases found</td></tr>';
+          return;
+        }
+        
+        casesTableBody.innerHTML = paginatedCases.map(caseItem => `
+          <tr class="case-row">
+            <td>${caseItem.report_id || 'N/A'}</td>
+            <td>
+              ${caseItem.person_first_name || ''} 
+              ${caseItem.person_middle_name ? caseItem.person_middle_name + ' ' : ''}
+              ${caseItem.person_last_name || ''}
+            </td>
+            <td>${caseItem.person_age || 'N/A'}</td>
+            <td>${caseItem.person_gender || 'N/A'}</td>
+            <td>
+              <span class="badge ${caseItem.type === 'missing' ? 'bg-danger' : 'bg-success'}">
+                ${caseItem.type ? caseItem.type.toUpperCase() : 'N/A'}
+              </span>
+            </td>
+            <td>${caseItem.event_day || 'N/A'}</td>
+            <td>${caseItem.rejection_date || 'N/A'}</td>
+            <td class="text-end">
+              <button class="btn btn-sm btn-outline-primary view-details" data-id="${caseItem.report_id}">
+                <i class="fas fa-eye"></i> View
+              </button>
+            </td>
+          </tr>
+        `).join('');
+        
+        document.querySelectorAll('.view-details').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const reportId = this.getAttribute('data-id');
+            showCaseDetails(reportId);
+          });
+        });
+      }
+      
+      function filterCases() {
+        const searchTerm = searchInput.value.toLowerCase();
+        if (!searchTerm) return allCases;
+        
+        return allCases.filter(c => 
+          (c.person_first_name && c.person_first_name.toLowerCase().includes(searchTerm)) ||
+          (c.person_last_name && c.person_last_name.toLowerCase().includes(searchTerm)) ||
+          (c.report_id && c.report_id.toLowerCase().includes(searchTerm)) ||
+          (c.location && c.location.toLowerCase().includes(searchTerm))
+        );
+      }
+      
+      function paginateCases(cases) {
+        const start = (currentPage - 1) * casesPerPage;
+        return cases.slice(start, start + casesPerPage);
+      }
+      
+      function renderPagination() {
+        const filteredCases = filterCases();
+        const totalPages = Math.ceil(filteredCases.length / casesPerPage);
+        const pagination = document.getElementById('pagination');
+        
+        pagination.innerHTML = '';
+        
+        if (totalPages <= 1) return;
+        
+        pagination.innerHTML += `
+          <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" aria-label="Previous" ${currentPage === 1 ? 'tabindex="-1"' : ''}>
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        `;
+        
+        for (let i = 1; i <= totalPages; i++) {
+          pagination.innerHTML += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+              <a class="page-link" href="#">${i}</a>
+            </li>
+          `;
+        }
+        
+        pagination.innerHTML += `
+          <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="#" aria-label="Next" ${currentPage === totalPages ? 'tabindex="-1"' : ''}>
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        `;
+        
+        document.querySelectorAll('.page-link').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (this.getAttribute('aria-label') === 'Previous') {
+              if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+              }
+            } else if (this.getAttribute('aria-label') === 'Next') {
+              if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+              }
+            } else {
+              const pageNum = parseInt(this.textContent);
+              if (pageNum !== currentPage) {
+                currentPage = pageNum;
+                renderTable();
+              }
+            }
+          });
+        });
+      }
+      
+      function showCaseDetails(reportId) {
+        const caseData = allCases.find(c => c.report_id === reportId);
+        if (!caseData) return;
+        
+        const modalContent = document.getElementById('caseDetailsContent');
+        modalContent.innerHTML = `
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              ${caseData.picture ? `
+                <img src="${caseData.picture}" alt="Person photo" class="img-fluid rounded person-img">
+              ` : `
+                <div class="d-flex align-items-center justify-content-center bg-light rounded person-img">
+                  <i class="fas fa-user fa-5x text-muted"></i>
+                </div>
+              `}
+            </div>
+            <div class="col-md-8">
+              <h4>${caseData.person_first_name || ''} ${caseData.person_middle_name ? caseData.person_middle_name + ' ' : ''}${caseData.person_last_name || ''}</h4>
+              <p class="text-muted">Report ID: ${caseData.report_id || 'N/A'}</p>
+              
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <p><span class="detail-label">Age:</span> ${caseData.person_age || 'N/A'}</p>
+                  <p><span class="detail-label">Gender:</span> ${caseData.person_gender || 'N/A'}</p>
+                  <p><span class="detail-label">Type:</span> 
+                    <span class="badge ${caseData.type === 'missing' ? 'bg-danger' : 'bg-success'}">
+                      ${caseData.type ? caseData.type.toUpperCase() : 'N/A'}
+                    </span>
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <p><span class="detail-label">Event Date:</span> ${caseData.event_day || 'N/A'}</p>
+                  <p><span class="detail-label">Event Time:</span> ${caseData.event_time || 'N/A'}</p>
+                  <p><span class="detail-label">Location:</span> ${caseData.location || 'N/A'}</p>
+                </div>
+              </div>
+              
+              <div class="mt-3">
+                <h5>Physical Appearance</h5>
+                <p>${caseData.physical_appearance || 'Not specified'}</p>
+              </div>
+              
+              ${caseData.additional_description ? `
+                <div class="mt-3">
+                  <h5>Additional Description</h5>
+                  <p>${caseData.additional_description}</p>
+                </div>
+              ` : ''}
+              
+              <div class="mt-3 rejection-reason">
+                <h5><i class="fas fa-times-circle text-danger me-2"></i>Rejection Reason</h5>
+                <p>${caseData.rejection_reason || 'No reason specified'}</p>
+              </div>
+              
+              <div class="mt-4">
+                <h5>Reporter Information</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p><span class="detail-label">Name:</span> 
+                      ${caseData.reporter_first_name || ''} 
+                      ${caseData.reporter_middle_name ? caseData.reporter_middle_name + ' ' : ''}
+                      ${caseData.reporter_last_name || ''}
+                    </p>
+                    <p><span class="detail-label">Age:</span> ${caseData.reporter_age || 'N/A'}</p>
+                    <p><span class="detail-label">Gender:</span> ${caseData.reporter_gender || 'N/A'}</p>
+                  </div>
+                  <div class="col-md-6">
+                    <p><span class="detail-label">Phone:</span> ${caseData.phone_number || 'N/A'}</p>
+                    <p><span class="detail-label">Relationship:</span> ${caseData.relationship_or_place || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        caseDetailsModal.show();
+      }
+      
+      searchInput.addEventListener('input', function() {
+        currentPage = 1;
+        renderTable();
+        renderPagination();
+      });
+      
+      refreshBtn.addEventListener('click', function() {
+        loadCases();
+      });
+      
+      loadCases();
+    });
+  </script>
+</body>
+</html>

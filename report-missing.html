@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Missing Person</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/report.css">
+</head>
+<body class="light-mode">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top w-100" style="z-index: 1030;">
+        <div class="container-fluid">
+            <!-- Brand -->
+            <a class="navbar-brand text-primary" href="index.html">
+                <i class="fa-solid fa-magnifying-glass-location"></i> Missing Persons Reporting System
+            </a>
+            
+            <!-- Hamburger Menu Button -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Navbar Items -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+                    <li class="nav-item mx-1 mx-lg-2">
+                        <a class="nav-link text-primary" href="index.html">
+                            <i class="fa-solid fa-house"></i> <span class="d-none d-lg-inline">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-1 mx-lg-2">
+                        <a class="nav-link text-primary active" href="report-missing.html">
+                            <i class="fa-solid fa-user"></i>
+                            <i class="fa-solid fa-times" style="color: red; margin-left: -5px;"></i> 
+                            <span class="d-none d-lg-inline">Report Missing</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-1 mx-lg-2">
+                        <a class="nav-link text-primary" href="report-found.html">
+                            <i class="fa-solid fa-user-check"></i> <span class="d-none d-lg-inline">Report Found</span>
+                        </a>
+                    </li>                      
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="full-screen-form">
+        <div class="form-container">
+            <h2 class="text-center mb-4">Report Missing Person</h2>
+            <form id="missingForm" action="submit_missing_report.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="form_type" value="missing">
+                <div class="form-section">
+                    <h4>Reporter Details</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="reporter-first-name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="reporter-first-name" name="reporter_first_name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="reporter-middle-name" class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="reporter-middle-name" name="reporter_middle_name">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="reporter-last-name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="reporter-last-name" name="reporter_last_name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="reporter-age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="reporter-age" name="reporter_age">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="reporter-gender" class="form-label">Gender</label>
+                            <select class="form-select" id="reporter-gender" name="reporter_gender">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="permanent-residence" class="form-label">Permanent Residence</label>
+                            <input type="text" class="form-control" id="permanent-residence" name="permanent_residence" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="current-residence" class="form-label">Current Residence</label>
+                            <input type="text" class="form-control" id="current-residence" name="current_residence" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="phone-number" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone-number" name="phone_number" pattern="[0-9]{10}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="relationship" class="form-label">Relationship to Missing Person</label>
+                            <input type="text" class="form-control" id="relationship" name="relationship" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h4>Missing Person's Details</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="missing-first-name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="missing-first-name" name="missing_first_name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="missing-middle-name" class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="missing-middle-name" name="missing_middle_name">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="missing-last-name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="missing-last-name" name="missing_last_name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="missing-age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="missing-age" name="missing_age" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="missing-gender" class="form-label">Gender</label>
+                            <select class="form-select" id="missing-gender" name="missing_gender" required>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="last-seen-location" class="form-label">Last Seen Location</label>
+                            <input type="text" class="form-control" id="last-seen-location" name="last_seen_location" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="physical-appearance" class="form-label">Physical Appearance</label>
+                            <textarea class="form-control" id="physical-appearance" name="physical_appearance" rows="3" required></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="lost-time" class="form-label">Last Seen Time</label>
+                            <input type="time" class="form-control" id="lost-time" name="lost_time" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="lost-day" class="form-label">Last Seen Date</label>
+                            <input type="date" class="form-control" id="lost-day" name="lost_day" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="picture" class="form-label">Upload Image</label>
+                            <input type="file" class="form-control" id="picture" name="picture" accept="image/*" required>
+
+                        <div class="col-md-12">
+                            <label for="additional-description" class="form-label">Additional Description</label>
+                            <textarea class="form-control" id="additional-description" name="additional_description" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Verification Modal -->
+    <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verificationModalLabel">Verify Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please verify the details below before submitting:</p>
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <strong>Reporter Details</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" id="reporterDetailsDisplay"></div>
+                        </div>
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <strong>Missing Person Details</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" id="missingPersonDetailsDisplay"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <strong>Uploaded Image</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <img id="uploadedImagePreview" src="#" alt="Uploaded Image" style="max-width: 100%; height: auto; display: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Edit</button>
+                    <button type="button" class="btn btn-primary" id="confirmSubmit">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const missingForm = document.getElementById('missingForm');
+        const verificationModal = new bootstrap.Modal(document.getElementById('verificationModal'));
+        const confirmSubmitBtn = document.getElementById('confirmSubmit');
+        const pictureInput = document.getElementById('picture');
+        const captureButton = document.getElementById('captureButton');
+        const uploadedImagePreview = document.getElementById('uploadedImagePreview');
+    
+        // Populate modal and show it on form submit
+        missingForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+        
+            document.getElementById('reporterDetailsDisplay').innerHTML = `
+                <div class="col-md-4"><strong>First Name:</strong> ${document.getElementById('reporter-first-name').value}</div>
+                <div class="col-md-4"><strong>Middle Name:</strong> ${document.getElementById('reporter-middle-name').value || 'N/A'}</div>
+                <div class="col-md-4"><strong>Last Name:</strong> ${document.getElementById('reporter-last-name').value}</div>
+                <div class="col-md-4"><strong>Age:</strong> ${document.getElementById('reporter-age').value || 'N/A'}</div>
+                <div class="col-md-4"><strong>Gender:</strong> ${document.getElementById('reporter-gender').value}</div>
+                <div class="col-md-4"><strong>Permanent Residence:</strong> ${document.getElementById('permanent-residence').value}</div>
+                <div class="col-md-4"><strong>Current Residence:</strong> ${document.getElementById('current-residence').value}</div>
+                <div class="col-md-4"><strong>Phone Number:</strong> ${document.getElementById('phone-number').value}</div>
+                <div class="col-md-4"><strong>Relationship:</strong> ${document.getElementById('relationship').value}</div>
+            `;
+        
+            document.getElementById('missingPersonDetailsDisplay').innerHTML = `
+                <div class="col-md-4"><strong>First Name:</strong> ${document.getElementById('missing-first-name').value}</div>
+                <div class="col-md-4"><strong>Middle Name:</strong> ${document.getElementById('missing-middle-name').value || 'N/A'}</div>
+                <div class="col-md-4"><strong>Last Name:</strong> ${document.getElementById('missing-last-name').value}</div>
+                <div class="col-md-4"><strong>Age:</strong> ${document.getElementById('missing-age').value}</div>
+                <div class="col-md-4"><strong>Gender:</strong> ${document.getElementById('missing-gender').value}</div>
+                <div class="col-md-4"><strong>Last Seen Location:</strong> ${document.getElementById('last-seen-location').value}</div>
+                <div class="col-md-4"><strong>Physical Appearance:</strong> ${document.getElementById('physical-appearance').value}</div>
+                <div class="col-md-4"><strong>Last Seen Time:</strong> ${document.getElementById('lost-time').value}</div>
+                <div class="col-md-4"><strong>Last Seen Date:</strong> ${document.getElementById('lost-day').value}</div>
+            `;
+        
+            if (pictureInput.files && pictureInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImagePreview.src = e.target.result;
+                    uploadedImagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(pictureInput.files[0]);
+            } else {
+                uploadedImagePreview.style.display = 'none';
+            }
+        
+            verificationModal.show();
+        });
+        
+        // Handle confirm button click
+        confirmSubmitBtn.addEventListener('click', function() {
+            fetch('submit_missing_report.php', {
+                method: 'POST',
+                body: new FormData(missingForm)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}, Status Text: ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .then(text => {
+                console.log('Raw response:', text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        verificationModal.hide();
+                        missingForm.reset();
+                        uploadedImagePreview.style.display = 'none';
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    } else {
+                        alert('Submission failed: ' + data.message);
+                        verificationModal.hide();
+                    }
+                } catch (jsonError) {
+                    console.error('JSON parse error:', jsonError);
+                    throw new Error('Invalid JSON response from server');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('An unexpected error occurred: ' + error.message);
+                verificationModal.hide();
+            });
+        });
+        
+        // Camera capture functionality
+        async function captureImage() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const captureModal = document.createElement('div');
+                captureModal.classList.add('modal', 'fade');
+                captureModal.innerHTML = `
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Capture Image</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <video id="cameraFeed" autoplay style="max-width: 100%; height: auto;"></video>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="takePhotoButton">Take Photo</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        
+                document.body.appendChild(captureModal);
+                const modal = new bootstrap.Modal(captureModal);
+                modal.show();
+        
+                const video = captureModal.querySelector('#cameraFeed');
+                video.srcObject = stream;
+        
+                const takePhotoButton = captureModal.querySelector('#takePhotoButton');
+                takePhotoButton.addEventListener('click', () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+                    const imageDataUrl = canvas.toDataURL('image/png');
+                    uploadedImagePreview.src = imageDataUrl;
+                    uploadedImagePreview.style.display = 'block';
+        
+                    fetch(imageDataUrl)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], 'captured-image.png', { type: 'image/png' });
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(file);
+                            pictureInput.files = dataTransfer.files;
+                        });
+        
+                    stream.getTracks().forEach(track => track.stop());
+                    modal.hide();
+                });
+        
+                captureModal.addEventListener('hidden.bs.modal', () => {
+                    stream.getTracks().forEach(track => track.stop());
+                    document.body.removeChild(captureModal);
+                });
+            } catch (error) {
+                console.error('Error accessing the camera:', error);
+                alert('Failed to access the camera. Please ensure you have granted camera permissions.');
+            }
+        }
+        
+        captureButton.addEventListener('click', captureImage);
+        
+        pictureInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImagePreview.src = e.target.result;
+                    uploadedImagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

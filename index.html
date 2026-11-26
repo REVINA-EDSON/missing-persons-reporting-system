@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing Persons Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/styles.css">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body class="light-mode d-flex flex-column min-vh-100">
+
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top w-100" style="z-index: 1030;">
+        <div class="container-fluid">
+            <!-- Brand -->
+            <a class="navbar-brand text-primary" href="index.html">
+                <i class="fa-solid fa-magnifying-glass-location"></i> Missing Persons Reporting System
+            </a>
+            
+            <!-- Hamburger Menu Button -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Navbar Items - Collapsed by default on mobile -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
+                    <li class="nav-item mx-1 mx-lg-2">
+                        <a class="nav-link text-primary" href="index.html">
+                            <i class="fa-solid fa-house"></i> <span class="d-none d-lg-inline">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-1 mx-lg-2">
+                        <a class="nav-link text-primary" href="report-missing.html">
+                            <i class="fa-solid fa-user"></i>
+                            <i class="fa-solid fa-times" style="color: red; margin-left: -5px;"></i> 
+                            <span class="d-none d-lg-inline">Report Missing</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mx-1 mx-lg-2">
+                        <a class="nav-link text-primary" href="report-found.html">
+                            <i class="fa-solid fa-user-check"></i> <span class="d-none d-lg-inline">Report Found</span>
+                        </a>
+                    </li>
+                
+                   
+                    <!-- Login -->
+                    <li class="nav-item mx-1 mx-lg-2">
+                        <a class="nav-link text-primary d-flex align-items-center" href="admin-login.html">
+                            <i class="fa-solid fa-user-circle"></i> <span class="d-none d-lg-inline ms-1">Login</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center py-5">
+        <div class="container">
+            <h1 class="display-4">Help Us Find Missing Persons In Dodoma</h1>
+            <p class="lead">A community-driven platform connecting families with missing loved ones, focusing primarily on children in the Dodoma region.</p>
+            <!-- Buttons -->
+            <div class="mb-4">
+                <a href="report-missing.html" class="btn btn-primary btn-lg me-3">Report Missing Person</a>
+                <a href="report-found.html" class="btn btn-success btn-lg">Report Found Person</a>
+            </div>
+            <!-- Search Bar -->
+            <!-- Search Bar -->
+<form class="search-bar d-flex justify-content-center" role="search" id="searchForm">
+    <div class="input-group search-bar-long shadow-sm rounded-pill">
+        <input type="search" id="searchInput" class="form-control border-0 rounded-start-pill ps-4" 
+               placeholder="Search for missing persons..." aria-label="Search" autocomplete="off">
+        <button class="btn btn-primary rounded-end-pill px-4" type="submit" aria-label="Search">
+            <i class="fa fa-search"></i>
+        </button>
+    </div>
+</form>
+
+<!-- Search Results Dropdown -->
+<div id="searchResults" class="position-absolute w-50" style="z-index: 1000; display: none;">
+    <div class="card mt-1 shadow-lg">
+        <div class="card-body p-0">
+            <ul id="resultsList" class="list-group list-group-flush">
+                <!-- Results will be inserted here -->
+            </ul>
+        </div>
+    </div>
+</div>
+        </div>
+    </section>
+
+
+
+
+    <!-- Public Posts Section -->
+<section class="public-posts py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Recently Reported Cases</h2>
+        <div class="row">
+            <!-- Reports will be loaded dynamically here -->
+        </div>
+    </div>
+</section>
+
+
+ <!-- Footer -->
+<footer class="bg-white text-dark mt-auto border-top">
+    <div class="container py-5">
+        <div class="row g-4">
+            <!-- About Section -->
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-brand d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-magnifying-glass-location fa-2x text-primary me-2"></i>
+                    <span class="h5 mb-0 text-primary">Missing Persons Tracker</span>
+                </div>
+                <p class="text-muted">A community initiative helping reunite families in the Dodoma region since 2025.</p>
+                
+                <div class="trust-badges mt-4">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-shield-alt text-primary me-2"></i>
+                        <small class="text-muted">Secure & Confidential Reporting</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-hand-holding-heart text-primary me-2"></i>
+                        <small class="text-muted">Verified Non-Profit Organization</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-lg-2 col-md-6">
+                <h5 class="text-uppercase mb-4 text-primary">Take Action</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="report-missing.html" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="fas fa-user-plus me-2 text-primary"></i> Report Missing</a></li>
+                    <li class="mb-2"><a href="report-found.html" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="fas fa-user-check me-2 text-primary"></i> Report Found</a></li>
+                    <li class="mb-2"><a href="#" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="fas fa-hands-helping me-2 text-primary"></i> Volunteer</a></li>
+                    <li class="mb-2"><a href="#" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="fas fa-donate me-2 text-primary"></i> Donate</a></li>
+                </ul>
+            </div>
+
+            <!-- Resources -->
+            <div class="col-lg-2 col-md-6">
+                <h5 class="text-uppercase mb-4 text-primary">Resources</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="fas fa-file-alt me-2 text-primary"></i> Safety Tips</a></li>
+                    <li class="mb-2"><a href="#" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="fas fa-question-circle me-2 text-primary"></i> FAQs</a></li>
+                    <li class="mb-2"><a href="#" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="fas fa-book me-2 text-primary"></i> Annual Reports</a></li>
+                    <li class="mb-2"><a href="#" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="fas fa-newspaper me-2 text-primary"></i> News & Alerts</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact & Support -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-uppercase mb-4 text-primary">Contact & Support</h5>
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-3 d-flex">
+                        <i class="fas fa-headset me-3 mt-1 text-primary"></i>
+                        <div>
+                            <strong>24/7 Hotline:</strong>
+                            <div>+255 800 123 456</div>
+                        </div>
+                    </li>
+                    <li class="mb-3 d-flex">
+                        <i class="fas fa-envelope me-3 mt-1 text-primary"></i>
+                        <div>
+                            <strong>General:</strong>
+                            <div>help@missingpersonstracker.org</div>
+                        </div>
+                    </li>
+                    <li class="mb-3 d-flex">
+                        <i class="fas fa-map-marker-alt me-3 mt-1 text-primary"></i>
+                        <div>
+                            <strong>Headquarters:</strong>
+                            <div>123 Justice Road, Dodoma, Tanzania</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Newsletter & Social -->
+            <div class="col-lg-2 col-md-6">
+                <h5 class="text-uppercase mb-4 text-primary">Stay Connected</h5>
+                <div class="social-links mb-4">
+                    <a href="#" class="text-dark me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-dark me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-dark me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-dark me-2"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="text-dark"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                
+                <div class="app-download mb-3">
+                    <p class="small text-muted mb-2">Get our mobile app:</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-outline-dark btn-sm p-1">
+                            <i class="fab fa-google-play me-1"></i> Play Store
+                        </a>
+                        <a href="#" class="btn btn-outline-dark btn-sm p-1">
+                            <i class="fab fa-app-store me-1"></i> App Store
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copyright & Legal -->
+    <div class="bg-light text-center py-3 border-top">
+        <div class="container">
+            <div class="d-md-flex justify-content-between align-items-center">
+                <p class="mb-2 mb-md-0 text-muted small">
+                    &copy; 2025 Missing Persons Tracker. All rights reserved.
+                </p>
+                <div class="legal-links">
+                    <a href="#" class="text-muted small text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-muted small text-decoration-none me-3">Terms of Service</a>
+                    <a href="#" class="text-muted small text-decoration-none">Accessibility</a>
+                </div>
+            </div>
+            <div class="mt-2">
+                <p class="small text-muted mb-0">
+                    Registered NGO under Tanzania Ministry of Community Development (Reg. No. CD12345)
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- View Details Modal -->
+<div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="detailsModalTitle">Person Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalBodyContent">
+          <!-- Content will be loaded here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/load-reports.js"></script>
+    <script src="scripts/search.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Found Persons Reports | Admin Dashboard</title>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+  <style>
+    :root {
+      --primary-color: #6C5CE7;
+      --secondary-color: #00CEC9;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --dark-color: #2d2b4a;
+      --light-color: #f8f9fa;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-color);
+      padding-top: 70px;
+      transition: all 0.3s ease;
+    }
+    
+    /* Sidebar styles */
+    .sidebar {
+      width: 280px;
+      background: white;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    /* Dark mode styles */
+    .dark-mode {
+      background-color: #1a1a2e;
+      color: #f8f9fa;
+    }
+    
+    .dark-mode .card,
+    .dark-mode .modal-content,
+    .dark-mode .sidebar {
+      background-color: var(--dark-color);
+      color: #f8f9fa;
+      border-color: #444;
+    }
+    
+    .dark-mode .table {
+      color: #f8f9fa;
+      --bs-table-bg: var(--dark-color);
+    }
+    
+    .dark-mode .sidebar-menu .nav-link {
+      color: #f8f9fa;
+    }
+    
+    .dark-mode .sidebar-header {
+      border-bottom-color: #444;
+    }
+    
+    .dark-mode .form-control,
+    .dark-mode .form-select {
+      background-color: #333;
+      color: #fff;
+      border-color: #555;
+    }
+    
+    /* Table styles */
+    .report-image {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    
+    .action-buttons .btn {
+      margin: 2px;
+      min-width: 80px;
+    }
+    
+    .badge-pending {
+      background-color: var(--warning-color);
+      color: #212529;
+    }
+    
+    .badge-approved {
+      background-color: var(--success-color);
+    }
+    
+    .badge-rejected {
+      background-color: var(--danger-color);
+    }
+    
+    /* Modal styles */
+    .modal-body img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Loading indicator */
+    #loadingIndicator {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1050;
+    }
+    
+    /* Status colors */
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 250px;
+      }
+      .main-content {
+        width: calc(100% - 250px) !important;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        z-index: 1000;
+        height: 100vh;
+      }
+      .sidebar.show {
+        transform: translateX(0);
+      }
+      .main-content {
+        width: 100% !important;
+      }
+      .navbar-toggler {
+        display: block !important;
+      }
+    }
+    
+    /* Custom card styles */
+    .info-card {
+      border-left: 4px solid var(--primary-color);
+      transition: transform 0.2s;
+    }
+    
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    /* Custom button styles */
+    .btn-details {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .btn-details:hover {
+      background-color: #00a8a8;
+      color: white;
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <!-- Top Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+      <button class="navbar-toggler me-2" type="button" id="sidebarToggle">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-search-location me-2"></i>Missing Persons Reporting System
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <button id="themeToggle" class="btn btn-outline-light">
+              <i class="fas fa-moon"></i> Dark Mode
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar position-fixed h-100">
+    <div class="sidebar-header p-3 border-bottom">
+      <h5 class="mb-0">
+        <i class="fas fa-user-shield me-2"></i>Found Persons 
+      </h5>
+    </div>
+    <div class="sidebar-menu p-3">
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2">
+          <a class="nav-link" href="index.html">
+            <i class="fa-solid fa-house"></i> Home
+          </a>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link" href="admin-dashboard.html">
+            <i class="fas fa-tachometer-alt me-2"></i>Case Management Panel
+          </a>
+
+          
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link" href="missing-reports.html">
+            <i class="fas fa-search me-2"></i>Missing Reports
+          </a>
+        </li>
+        
+        <a href="admin-login.html" class="btn btn-danger btn-sm w-100 mt-3">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content ms-auto" style="width: calc(100% - 280px); padding: 20px;">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+          <i class="fas fa-check-circle me-2"></i>Found Persons Reports
+        </h2>
+        
+      </div>
+      
+      <!-- Summary Cards -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card info-card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-muted mb-2">Total Reports</h6>
+                  <h3 class="mb-0" id="totalReports">0</h3>
+                </div>
+                <div class="bg-primary bg-opacity-10 p-3 rounded">
+                  <i class="fas fa-file-alt text-primary fs-4"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card info-card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-muted mb-2">Approved</h6>
+                  <h3 class="mb-0" id="approvedReports">0</h3>
+                </div>
+                <div class="bg-success bg-opacity-10 p-3 rounded">
+                  <i class="fas fa-check-circle text-success fs-4"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card info-card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="text-muted mb-2">Pending</h6>
+                  <h3 class="mb-0" id="pendingReports">0</h3>
+                </div>
+                <div class="bg-warning bg-opacity-10 p-3 rounded">
+                  <i class="fas fa-clock text-warning fs-4"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Filters Card -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label for="searchName" class="form-label">Search by Name</label>
+              <input type="text" class="form-control" id="searchName" placeholder="Enter found person's name...">
+            </div>
+            <div class="col-md-2">
+              <label for="filterStatus" class="form-label">Status</label>
+              <select class="form-select" id="filterStatus">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="filterDateFrom" class="form-label">From Date</label>
+              <input type="date" class="form-control" id="filterDateFrom">
+            </div>
+            <div class="col-md-2">
+              <label for="filterDateTo" class="form-label">To Date</label>
+              <input type="date" class="form-control" id="filterDateTo">
+            </div>
+            <div class="col-md-2">
+              <label for="filterLocation" class="form-label">Location</label>
+              <input type="text" class="form-control" id="filterLocation" placeholder="Enter location...">
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+              <button class="btn btn-primary w-100" id="applyFiltersBtn">
+                <i class="fas fa-filter"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Reports Table -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="fas fa-list me-2"></i> Found Persons Reports</h5>
+          <div class="dropdown">
+            
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#" id="exportCSV"><i class="fas fa-file-csv me-2"></i>CSV</a></li>
+              <li><a class="dropdown-item" href="#" id="exportExcel"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
+              <li><a class="dropdown-item" href="#" id="exportPDF"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle" id="foundReportsTable">
+              <thead class="table-primary">
+                <tr>
+                  <th>Photo</th>
+                  <th>Found Person</th>
+                  <th>Age</th>
+                  <th>Gender</th>
+                  <th>Found Location</th>
+                  <th>Found Date</th>
+                  <th>Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="foundReportsBody">
+                <!-- Reports will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Report Details Modal -->
+  <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <!-- Content will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div id="loadingIndicator" class="spinner-border text-primary" style="width: 3rem; height: 3rem; display: none;" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <!-- PDFMake for Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+  <script>
+    // Initialize DataTable
+    let foundReportsTable;
+    
+    // Initialize page
+    $(document).ready(function() {
+      // Initialize DataTable
+      initializeDataTable();
+      
+      // Load initial reports
+      loadFoundReports();
+      loadReportStats();
+      
+      // Set up filter button with validation
+      $('#applyFiltersBtn').click(function() {
+        applyFilters();
+      });
+      
+      // Set up add new report button
+      $('#addFoundReportBtn').click(function() {
+        window.location.href = 'add-found-report.html';
+      });
+      
+      // Theme toggle
+      $('#themeToggle').click(function() {
+        toggleTheme();
+      });
+      
+      // Sidebar toggle for mobile
+      $('#sidebarToggle').click(function() {
+        $('.sidebar').toggleClass('show');
+      });
+      
+      // Export buttons
+      $('#exportCSV').click(function(e) {
+        e.preventDefault();
+        exportReports('csv');
+      });
+      
+      $('#exportExcel').click(function(e) {
+        e.preventDefault();
+        exportReports('excel');
+      });
+      
+      $('#exportPDF').click(function(e) {
+        e.preventDefault();
+        exportReports('pdf');
+      });
+      
+      // Check for saved theme preference
+      checkThemePreference();
+    });
+
+    // Initialize DataTable
+    function initializeDataTable() {
+      foundReportsTable = $('#foundReportsTable').DataTable({
+        responsive: true,
+        dom: '<"top"f>rt<"bottom"lip><"clear">',
+        language: {
+          search: "_INPUT_",
+          searchPlaceholder: "Search reports...",
+          lengthMenu: "Show _MENU_ reports per page",
+          zeroRecords: "No matching reports found",
+          info: "Showing _START_ to _END_ of _TOTAL_ reports",
+          infoEmpty: "No reports available",
+          infoFiltered: "(filtered from _MAX_ total reports)"
+        },
+        columnDefs: [
+          { orderable: false, targets: [0, 7] } // Disable sorting for photo and actions columns
+        ]
+      });
+    }
+    
+    // Apply filters to the table
+    function applyFilters() {
+      const dateFrom = $('#filterDateFrom').val();
+      const dateTo = $('#filterDateTo').val();
+      
+      if ((dateFrom && !isValidDate(dateFrom)) || (dateTo && !isValidDate(dateTo))) {
+        showError('Please enter valid dates in YYYY-MM-DD format');
+        return;
+      }
+      
+      if (dateFrom && dateTo && new Date(dateFrom) > new Date(dateTo)) {
+        showError('"From Date" cannot be after "To Date"');
+        return;
+      }
+      
+      const filters = {
+        name: $('#searchName').val().trim(),
+        status: $('#filterStatus').val(),
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        location: $('#filterLocation').val().trim()
+      };
+      
+      loadFoundReports(filters);
+    }
+    
+    // Load found reports from database
+    function loadFoundReports(filters = {}) {
+      $('#loadingIndicator').show();
+      
+      $.ajax({
+        url: 'get_found_reports.php',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(filters),
+        success: function(data) {
+          if (data.success) {
+            renderReports(data.reports);
+            if (filters.name || filters.status || filters.dateFrom || filters.dateTo || filters.location) {
+              showSuccess(`Found ${data.reports.length} matching reports`);
+            }
+          } else {
+            showError(data.error || 'Failed to load reports');
+          }
+        },
+        error: function(xhr, status, error) {
+          showError('Error loading reports: ' + error);
+        },
+        complete: function() {
+          $('#loadingIndicator').hide();
+        }
+      });
+    }
+    
+    // Load report statistics
+    function loadReportStats() {
+      $.ajax({
+        url: 'get_found_report_stats.php',
+        type: 'GET',
+        success: function(data) {
+          if (data.success) {
+            $('#totalReports').text(data.total);
+            $('#approvedReports').text(data.approved);
+            $('#pendingReports').text(data.pending);
+          }
+        },
+        error: function() {
+          console.error('Error loading report statistics');
+        }
+      });
+    }
+
+    // Render reports in the table
+    function renderReports(reports) {
+      // Clear existing DataTable data
+      foundReportsTable.clear().draw();
+      
+      if (!reports || reports.length === 0) {
+        foundReportsTable.row.add([
+          '',
+          '<div class="text-center py-4 text-muted">' +
+            '<i class="fas fa-exclamation-circle me-2"></i>' +
+            'No found persons reports found' +
+          '</div>',
+          '',
+          '',
+          '',
+          '',
+          '',
+          ''
+        ]).draw();
+        return;
+      }
+      
+      reports.forEach(report => {
+        const fullName = `${report.found_first_name || 'Unknown'} ${report.found_last_name || ''}`.trim();
+        const foundDate = formatDateTime(report.found_day, report.found_time);
+        
+        const rowNode = foundReportsTable.row.add([
+          `<img src="${report.picture || 'assets/images/default-profile.jpg'}" 
+                alt="${fullName}" 
+                class="report-image"
+                onerror="this.src='assets/images/default-profile.jpg'">`,
+          fullName || 'Unknown',
+          report.found_age || 'Unknown',
+          report.found_gender || 'Unknown',
+          report.found_location || 'Unknown',
+          foundDate,
+          `<span class="status-badge ${getStatusBadgeClass(report.status)}">
+            ${report.status || 'Pending'}
+          </span>`,
+          `<div class="text-end action-buttons">
+            <button class="btn btn-sm btn-primary view-btn" data-id="${report.report_id}">
+              <i class="fas fa-eye me-1"></i>View
+            </button>
+            <button class="btn btn-sm btn-success approve-btn" data-id="${report.report_id}" ${report.status === 'approved' ? 'disabled' : ''}>
+              <i class="fas fa-check me-1"></i>Approve
+            </button>
+            <button class="btn btn-sm btn-danger reject-btn" data-id="${report.report_id}" ${report.status === 'rejected' ? 'disabled' : ''}>
+              <i class="fas fa-times me-1"></i>Reject
+            </button>
+          </div>`
+        ]).draw(false).node();
+        
+        $(rowNode).attr('data-report-id', report.report_id);
+      });
+      
+      // Add event listeners to buttons
+      addReportActionListeners();
+    }
+
+    // Add event listeners to action buttons
+    function addReportActionListeners() {
+      $('#foundReportsTable').off('click', '.view-btn').on('click', '.view-btn', function() {
+        const reportId = $(this).data('id');
+        viewReportDetails(reportId);
+      });
+      
+      $('#foundReportsTable').off('click', '.approve-btn').on('click', '.approve-btn', function() {
+        const reportId = $(this).data('id');
+        updateReportStatus(reportId, 'approved');
+      });
+      
+      $('#foundReportsTable').off('click', '.reject-btn').on('click', '.reject-btn', function() {
+        const reportId = $(this).data('id');
+        updateReportStatus(reportId, 'rejected');
+      });
+    }
+
+    // View detailed report
+    function viewReportDetails(reportId) {
+      $('#loadingIndicator').show();
+      
+      $.ajax({
+        url: 'get_found_report_details.php',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ report_id: reportId }),
+        success: function(data) {
+          if (data.success) {
+            showReportModal(data.report);
+          } else {
+            showError(data.error || 'Failed to load report details');
+          }
+        },
+        error: function(xhr, status, error) {
+          showError('Error loading report details: ' + error);
+        },
+        complete: function() {
+          $('#loadingIndicator').hide();
+        }
+      });
+    }
+
+    // Show report details in modal
+    function showReportModal(report) {
+      const foundDateTime = formatDateTime(report.found_day, report.found_time);
+      const reporterName = `${report.reporter_first_name} ${report.reporter_last_name}`;
+      const foundPersonName = `${report.found_first_name || 'Unknown'} ${report.found_last_name || ''}`.trim();
+      
+      const modalContent = `
+        <div class="modal-header">
+          <h5 class="modal-title">Found Person Report #${report.report_id}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <img src="${report.picture || 'assets/images/default-profile.jpg'}" 
+                   class="img-fluid rounded mb-3"
+                   onerror="this.src='assets/images/default-profile.jpg'">
+              <h4>${foundPersonName || 'Unknown Person'}</h4>
+              <p><strong>Age:</strong> ${report.found_age || 'Unknown'}</p>
+              <p><strong>Gender:</strong> ${report.found_gender || 'Unknown'}</p>
+              <span class="status-badge ${getStatusBadgeClass(report.status)}">
+                ${report.status || 'Pending'}
+              </span>
+            </div>
+            <div class="col-md-8">
+              <div class="mb-4">
+                <h5>Found Details</h5>
+                <p><strong>Location:</strong> ${report.found_location || 'Unknown'}</p>
+                <p><strong>Date & Time:</strong> ${foundDateTime}</p>
+              </div>
+              
+              <div class="mb-4">
+                <h5>Physical Description</h5>
+                <p>${report.physical_appearance || 'No description provided'}</p>
+              </div>
+              
+              <div class="mb-4">
+                <h5>Reporter Information</h5>
+                <p><strong>Name:</strong> ${reporterName}</p>
+                <p><strong>Age:</strong> ${report.reporter_age || 'Unknown'}</p>
+                <p><strong>Gender:</strong> ${report.reporter_gender || 'Unknown'}</p>
+                <p><strong>Phone:</strong> ${report.phone_number || 'Not provided'}</p>
+                <p><strong>Permanent Residence:</strong> ${report.permanent_residence || 'Unknown'}</p>
+                <p><strong>Current Residence:</strong> ${report.current_residence || 'Unknown'}</p>
+              </div>
+              
+              ${report.additional_description ? `
+              <div class="mb-4">
+                <h5>Additional Information</h5>
+                <p>${report.additional_description}</p>
+              </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="printReportBtn">
+            <i class="fas fa-print me-1"></i>Print Report
+          </button>
+        </div>
+      `;
+      
+      $('#reportModal .modal-content').html(modalContent);
+      const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+      modal.show();
+      
+      // Add print functionality
+      $('#printReportBtn').click(function() {
+        window.print();
+      });
+    }
+
+    // Update report status
+    function updateReportStatus(reportId, status) {
+      if (!confirm(`Are you sure you want to ${status} this report?`)) return;
+      
+      $('#loadingIndicator').show();
+      
+      $.ajax({
+        url: 'update_found_report_status.php',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ 
+          report_id: reportId, 
+          status: status 
+        }),
+        success: function(data) {
+          if (data.success) {
+            showSuccess(`Report ${status} successfully`);
+            loadFoundReports(); // Refresh the table
+            loadReportStats(); // Refresh statistics
+          } else {
+            showError(data.error || `Failed to ${status} report`);
+          }
+        },
+        error: function(xhr, status, error) {
+          showError(`Error updating status: ${error}`);
+        },
+        complete: function() {
+          $('#loadingIndicator').hide();
+        }
+      });
+    }
+    
+    // Export reports
+    function exportReports(format) {
+      $('#loadingIndicator').show();
+      
+      const filters = {
+        name: $('#searchName').val().trim(),
+        status: $('#filterStatus').val(),
+        dateFrom: $('#filterDateFrom').val(),
+        dateTo: $('#filterDateTo').val(),
+        location: $('#filterLocation').val().trim(),
+        format: format
+      };
+      
+      $.ajax({
+        url: 'export_found_reports.php',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(filters),
+        success: function(data) {
+          if (data.success && data.file) {
+            window.location.href = data.file;
+          } else {
+            showError(data.error || 'Failed to export reports');
+          }
+        },
+        error: function(xhr, status, error) {
+          showError('Error exporting reports: ' + error);
+        },
+        complete: function() {
+          $('#loadingIndicator').hide();
+        }
+      });
+    }
+
+    // Helper functions
+    function getStatusBadgeClass(status) {
+      switch((status || '').toLowerCase()) {
+        case 'approved': return 'bg-success';
+        case 'rejected': return 'bg-danger';
+        case 'pending': return 'bg-warning';
+        default: return 'bg-secondary';
+      }
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'Unknown';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+    
+    function formatDateTime(dateString, timeString) {
+      if (!dateString) return 'Unknown';
+      
+      const date = new Date(dateString);
+      let formatted = date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      
+      if (timeString) {
+        const [hours, minutes] = timeString.split(':');
+        const timeDate = new Date();
+        timeDate.setHours(hours, minutes);
+        formatted += ' ' + timeDate.toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+      }
+      
+      return formatted;
+    }
+
+    function isValidDate(dateString) {
+      const regEx = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateString.match(regEx)) return false;
+      const d = new Date(dateString);
+      return d instanceof Date && !isNaN(d);
+    }
+    
+    function toggleTheme() {
+      $('body').toggleClass('dark-mode');
+      const isDark = $('body').hasClass('dark-mode');
+      $(this).html(`<i class="fas fa-${isDark ? 'sun' : 'moon'}"></i> ${isDark ? 'Light' : 'Dark'} Mode`);
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+    
+    function checkThemePreference() {
+      if (localStorage.getItem('theme') === 'dark') {
+        $('body').addClass('dark-mode');
+        $('#themeToggle').html('<i class="fas fa-sun"></i> Light Mode');
+      }
+    }
+
+    function showSuccess(message) {
+      const $alert = $(`
+        <div class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `);
+      $('body').append($alert);
+      setTimeout(() => $alert.alert('close'), 3000);
+    }
+
+    function showError(message) {
+      const $alert = $(`
+        <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `);
+      $('body').append($alert);
+      setTimeout(() => $alert.alert('close'), 5000);
+    }
+  </script>
+</body>
+</html>
